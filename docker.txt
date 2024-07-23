@@ -1,0 +1,31 @@
+docker run -d -p 8081:8080 -p 50000:50000 -v /usr/local/docker_jenkins:/var/jenkins_home -v /etc/localtime:/etc/localtime --name myjenkins jenkins/jenkins:2.452.1
+docker run -d -p 8081:8080 -p 50000:50000 -v /usr/local/docker_jenkins:/var/jenkins_home -v /etc/localtime:/etc/localtime --name myjenkins jenkins/Jenkins
+
+docker run -d -p 8081:8080 -p 50000:50000 -v /usr/local/docker_jenkins:/var/jenkins_home -v /etc/localtime:/etc/localtime --name myjenkins jenkins/jenkins:2.426.2-lts
+
+
+
+docker run --name=jenkins -d -p 8081:8080 -p 50000:50000 -v jenkins_test:/var/jenkins_home -e JAVA_OPTS=-Duser.timezone=Asia/Shanghai jenkins/jenkins:2.426.2-lts
+
+docker run -d -p 8081:8080 -p 50000:50000 -v /usr/docker/jenkins_data:/var/jenkins_home -v /etc/localtime:/etc/localtime -v /usr/bin/docker:/usr/bin/docker -v /var/run/docker.sock:/var/run/docker.sock --restart=on-failure -u 0 --name myjenkins jenkins/jenkins:2.426.2-lts
+
+docker run --name jenkins -p 8080:8080 -p 50000:50000 -v jenkins_home:/var/jenkins_home -d jenkins/jenkins:lts
+
+docker login --username=你的用户名 registry.cn-hangzhou.aliyuncs.com
+
+docker pull jenkins/jenkins:2.426.2-lts
+docker pull registry.cn-hangzhou.aliyuncs.com/jenkins/jenkins:2.426.2-lt
+docker login --username=1084217207827666 registry.cn-hangzhou.aliyuncs.com
+1084217207827666
+
+docker拉取镜像，注意指定版本号，否则拉取的是比较旧的版本docker pull jenkins/jenkins:2.426.2-lts
+我们刚才已经创建了挂载目录，所以这里直接执行创建容器docker run -d -p 8082:8080 -p 50000:50000 -v /usr/docker/jenkins_data:/var/jenkins_home -v /etc/localtime:/etc/localtime -v /usr/bin/docker:/usr/bin/docker -v /var/run/docker.sock:/var/run/docker.sock --restart=on-failure -u 0 --name myjenkins jenkins/jenkins:2.426.2-lts指令解析：- -d ：后台运行容器- -p：端口映射， 左边是本地端口，右边是docker容器端口 ，8080是Jenkins Web 界面的工作端口,50000是JNLP（Java Network Launch Protocol）工作端口。这个端口用于 Jenkins 节点和主控节点之间的通信。- -v ：目录挂载，将主机上的 /usr/docker/jenkins_data 目录挂载到容器内的 /var/jenkins_home 目录，用于持久化 Jenkins 的数据。/etc/localtime:/etc/localtime：将本地主机上的时区信息文件挂载到容器内的 /etc/localtime 文件中，确保容器内的时间与主机上的时间一致- -v /usr/bin/docker:/usr/bin/docker: 将主机上的 /usr/bin/docker 文件挂载到容器中的 /usr/bin/docker，这样容器内的 Jenkins 可以直接使用宿主机上的 Docker 命令。在使用 GitLab/Jenkins 等 CI 软件的时候需要使用 Docker 命令来构建镜像，需要在容器中使用 Docker 命令；通过将宿主机的 Docker 共享给容器- -v /var/run/docker.sock:/var/run/docker.sock: 将主机上的 Docker socket 文件挂载到容器中的相同位置，这样容器内的 Jenkins 可以与宿主机上的 Docker 引擎进行通信。- –restart=on-failure：设置容器的重启策略为在容器以非零状态退出（异常退出）时重启。- -u 0：将容器内进程的用户身份设置为 root 用户，等同于-u root。- –name myjenkins：给容器指定一个名称为 myjenkins。
+极其重要！！！！！！！！！！刚才我们将jdk、maven放到了jenkins_home下，这里我们需要将其放到我们的数据卷中，也就是刚才创建的/usr/docker/jenkins_data目录下cp -r /var/jenkins_home/jdk1.8 /usr/docker/jenkins_datacp -r /var/jenkins_home/apache-maven-3.9.6 /usr/docker/jenkins_data这是因为docker和我们的主机是有环境隔离的，我们要将其映射
+
+
+https://cr.console.aliyun.com/repository/cn-hangzhou/lcy-dockerhub/testing/details
+
+
+https://www.cnblogs.com/mynl/p/17583362.html
+docker run -d -p 8081:8080 -p 50000:50000 -v /docker/jenkins:/var/jenkins_home -v /etc/localtime:/etc/localtime --name jenkins jenkins/jenkins:2.426.2-lts
+
