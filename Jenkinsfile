@@ -8,12 +8,11 @@ pipeline {
         SSH_CREDENTIALS = 'ecs-ssh-credentials' // Jenkins 中设置的 SSH 凭据 ID
     }
 
-        stages {
-            stage('Clone Repository') {
-                steps {
-                    // 从 GitHub 仓库克隆代码，使用 HTTPS 方式
-                    git branch: 'main', url: 'https://github.com/taicilang-lcy/Automation_Test.git', credentialsId: 'github-automation-test-token'
-                }
+    stages {
+        stage('Clone Repository') {
+            steps {
+                // 从 GitHub 仓库克隆代码，使用 HTTPS 方式
+                git branch: 'main', url: 'https://github.com/taicilang-lcy/Automation_Test.git', credentialsId: 'github-automation-test-token'
             }
         }
 
@@ -43,7 +42,7 @@ pipeline {
                 }
             }
         }
-    }
+    } // 关闭 stages 的花括号
 
     post {
         always {
