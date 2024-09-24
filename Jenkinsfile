@@ -17,14 +17,14 @@ pipeline {
 
         stage('Build Docker Image on ECS') {
             steps {
+                // SSH 到阿里云 ECS，并在远程服务器上构建 Docker 容器
                 script {
                     sshagent([SSH_CREDENTIALS]) {
                         sh """
-                        ssh -o StrictHostKeyChecking=no root@${ECS_IP} << 'ENDSSH'
-                        cd /usr/automation_pipeline/automation_test
-                        git pull origin main  # 确保指定远程分支
-                        docker build -t ${DOCKER_IMAGE} .
-                        ENDSSH
+                        ssh -o StrictHostKeyChecking=no root@${ECS_IP} '
+                            cd /usr/automation_pipeline/automation_test && 
+                            /usr/bin/git pull && 
+                            docker build -t ${DOCKER_IMAGE} .'
                         """
                     }
                 }
