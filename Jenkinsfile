@@ -3,8 +3,8 @@ pipeline {
     
     environment {
         // 配置相关变量
-        DOCKER_IMAGE = 'automation-test-image'  // Docker 镜像名称
-        ECS_IP = 'your_ecs_ip_address'          // 阿里云 ECS 的 IP 地址
+        DOCKER_IMAGE = 'auto-test-image'  // Docker 镜像名称
+        ECS_IP = '8.149.129.172'          // 阿里云 ECS 的 IP 地址
         SSH_CREDENTIALS = 'ecs-ssh-credentials' // Jenkins 中设置的 SSH 凭据 ID
     }
 
