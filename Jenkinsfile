@@ -20,7 +20,7 @@ pipeline {
             steps {
                 // SSH 到阿里云 ECS，并在远程服务器上构建 Docker 容器
                 script {
-                    sshagent(['SSH_CREDENTIALS']) {
+                    sshagent([SSH_CREDENTIALS]) { // 使用环境变量
                         sh """
                         ssh -o StrictHostKeyChecking=no root@${ECS_IP} 'cd /path/to/your/project && git pull'
                         ssh -o StrictHostKeyChecking=no root@${ECS_IP} 'cd /path/to/your/project && docker build -t ${DOCKER_IMAGE} .'
@@ -34,7 +34,7 @@ pipeline {
             steps {
                 // 在 ECS 上的 Docker 容器中运行测试
                 script {
-                    sshagent(['SSH_CREDENTIALS']) {
+                    sshagent([SSH_CREDENTIALS]) { // 使用环境变量
                         sh """
                         ssh -o StrictHostKeyChecking=no root@${ECS_IP} 'docker run --rm ${DOCKER_IMAGE} pytest tests/'
                         """
@@ -42,7 +42,7 @@ pipeline {
                 }
             }
         }
-    } // 关闭 stages 的花括号
+    }
 
     post {
         always {
