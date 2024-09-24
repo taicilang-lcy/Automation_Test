@@ -1,0 +1,61 @@
+pipeline {
+    agent any
+    
+    environment {
+        // 配置相关变量
+        DOCKER_IMAGE = 'automation-test-image'  // Docker 镜像名称
+        ECS_IP = 'your_ecs_ip_address'          // 阿里云 ECS 的 IP 地址
+        SSH_CREDENTIALS = 'ecs-ssh-credentials' // Jenkins 中设置的 SSH 凭据 ID
+    }
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                // 从 GitHub 仓库克隆代码
+                git branch: 'main', url: 'https://github.com/taicilang-lcy/Automation_Test.git'
+            }
+        }
+
+        stage('Build Docker Image on ECS') {
+            steps {
+                // SSH 到阿里云 ECS，并在远程服务器上构建 Docker 容器
+                script {
+                    sshagent(['SSH_CREDENTIALS']) {
+                        sh """
+                        ssh -o StrictHostKeyChecking=no root@${ECS_IP} 'cd /path/to/your/project && git pull'
+                        ssh -o StrictHostKeyChecking=no root@${ECS_IP} 'cd /path/to/your/project && docker build -t ${DOCKER_IMAGE} .'
+                        """
+                    }
+                }
+            }
+        }
+
+        stage('Run Tests in Docker on ECS') {
+            steps {
+                // 在 ECS 上的 Docker 容器中运行测试
+                script {
+                    sshagent(['SSH_CREDENTIALS']) {
+                        sh """
+                        ssh -o StrictHostKeyChecking=no root@${ECS_IP} 'docker run --rm ${DOCKER_IMAGE} pytest tests/'
+                        """
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            // 构建结束后清理工作区
+            cleanWs()
+        }
+        success {
+            // 测试成功后发送通知
+            echo 'Tests ran successfully!'
+        }
+        failure {
+            // 构建或测试失败时输出消息
+            echo 'Build or tests failed.'
+        }
+    }
+}
