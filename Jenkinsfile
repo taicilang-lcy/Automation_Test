@@ -2,7 +2,6 @@ pipeline {
     agent any
     
     environment {
-        // 配置相关变量
         DOCKER_IMAGE = 'auto-test-image'  // Docker 镜像名称
         ECS_IP = '8.149.129.172'          // 阿里云 ECS 的 IP 地址
         SSH_CREDENTIALS = 'ecs-ssh-credentials' // Jenkins 中设置的 SSH 凭据 ID
@@ -18,12 +17,14 @@ pipeline {
 
         stage('Build Docker Image on ECS') {
             steps {
-                // SSH 到阿里云 ECS，并在远程服务器上构建 Docker 容器
                 script {
-                    sshagent([SSH_CREDENTIALS]) { // 使用环境变量
+                    sshagent([SSH_CREDENTIALS]) {
                         sh """
-                        ssh -o StrictHostKeyChecking=no root@${ECS_IP} 'cd /usr/automation_pipeline/automation_test && /usr/bin/git pull'
-                        ssh -o StrictHostKeyChecking=no root@${ECS_IP} 'cd /usr/automation_pipeline/automation_test && docker build -t ${DOCKER_IMAGE} .'
+                        ssh -o StrictHostKeyChecking=no root@${ECS_IP} << 'ENDSSH'
+                        cd /usr/automation_pipeline/automation_test
+                        git pull origin main  # 确保指定远程分支
+                        docker build -t ${DOCKER_IMAGE} .
+                        ENDSSH
                         """
                     }
                 }
@@ -32,9 +33,8 @@ pipeline {
 
         stage('Run Tests in Docker on ECS') {
             steps {
-                // 在 ECS 上的 Docker 容器中运行测试
                 script {
-                    sshagent([SSH_CREDENTIALS]) { // 使用环境变量
+                    sshagent([SSH_CREDENTIALS]) {
                         sh """
                         ssh -o StrictHostKeyChecking=no root@${ECS_IP} 'docker run --rm ${DOCKER_IMAGE} pytest tests/'
                         """
@@ -46,16 +46,13 @@ pipeline {
 
     post {
         always {
-            // 构建结束后清理工作区
-            cleanWs()
+            cleanWs() // 清理工作区
         }
         success {
-            // 测试成功后发送通知
-            echo 'Tests ran successfully!'
+            echo 'Tests ran successfully!' // 成功消息
         }
         failure {
-            // 构建或测试失败时输出消息
-            echo 'Build or tests failed.'
+            echo 'Build or tests failed.' // 失败消息
         }
     }
 }
