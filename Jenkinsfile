@@ -22,8 +22,8 @@ pipeline {
                 script {
                     sshagent([SSH_CREDENTIALS]) { // 使用环境变量
                         sh """
-                        ssh -o StrictHostKeyChecking=no root@${ECS_IP} 'cd /path/to/your/project && git pull'
-                        ssh -o StrictHostKeyChecking=no root@${ECS_IP} 'cd /path/to/your/project && docker build -t ${DOCKER_IMAGE} .'
+                        ssh -o StrictHostKeyChecking=no root@${ECS_IP} 'cd /usr/automation_pipeline/automation_test && git pull'
+                        ssh -o StrictHostKeyChecking=no root@${ECS_IP} 'cd /usr/automation_pipeline/automation_test && docker build -t ${DOCKER_IMAGE} .'
                         """
                     }
                 }
