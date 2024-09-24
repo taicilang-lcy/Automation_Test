@@ -36,7 +36,7 @@ pipeline {
                 script {
                     sshagent([SSH_CREDENTIALS]) {
                         sh """
-                        ssh -o StrictHostKeyChecking=no root@${ECS_IP} 'docker run --rm ${DOCKER_IMAGE} pytest tests/'
+                        ssh -o StrictHostKeyChecking=no root@${ECS_IP} 'docker run ${DOCKER_IMAGE} pytest tests/'
                         """
                     }
                 }
