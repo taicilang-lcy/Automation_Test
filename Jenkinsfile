@@ -11,10 +11,11 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                // 从 GitHub 仓库克隆代码
-                git branch: 'main', url: 'https://github.com/taicilang-lcy/Automation_Test.git'
+                // 从 GitHub 仓库克隆代码，使用 HTTPS 方式
+                git branch: 'main', url: 'https://github.com/taicilang-lcy/Automation_Test.git', credentialsId: 'github-automation-test-token'
             }
         }
+    }
 
         stage('Build Docker Image on ECS') {
             steps {
